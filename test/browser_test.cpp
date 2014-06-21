@@ -14,7 +14,7 @@ public:
 	{
 		std::string const & dir(my::path::get_current_dir());
 		std::string const & path(my::path::combine(dir, "browser_test.ini"));
-		my::ini::file file(my::ini::file(32, path));
+		my::ini::file file(my::ini::file(path, 32));
 		my::ini::section section(file.get_section("browser_test"));
 		std::string js(section.get_string("js"));
 

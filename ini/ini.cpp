@@ -8,8 +8,8 @@
 
 #include "ini.h"
 
-my::ini::file::file(unsigned long const & buffer_size, std::string const & path)
-	: buffer_size(buffer_size), path(path), names(std::map<std::string const, nullptr_t const>())
+my::ini::file::file(std::string const & path, unsigned long const & buffer_size)
+	: path(path), buffer_size(buffer_size), names(std::map<std::string const, nullptr_t const>())
 {
 }
 
@@ -17,14 +17,14 @@ my::ini::file::~file()
 {
 }
 
-unsigned long const & my::ini::file::get_buffer_size() const
-{
-	return this->buffer_size;
-}
-
 std::string const & my::ini::file::get_path() const
 {
 	return this->path;
+}
+
+unsigned long const & my::ini::file::get_buffer_size() const
+{
+	return this->buffer_size;
 }
 
 std::vector<my::ini::section const> const my::ini::file::get_sections() const

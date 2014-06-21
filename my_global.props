@@ -7,6 +7,13 @@
     <ClCompile>
       <PreprocessorDefinitions>VC_EXTRALEAN;WIN32_LEAN_AND_MEAN;NTDDI_VERSION=NTDDI_WINXP;_WIN32_IE=_WIN32_IE_IE60;_WIN32_WINNT=_WIN32_WINNT_WINXP;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <PreBuildEvent>
+      <Command>echo copy /Y $(ProjectDir)\*.txt $(TargetDir)
+copy /Y $(ProjectDir)\*.txt $(TargetDir)
+echo copy /Y $(ProjectDir)\*.ini $(TargetDir)
+copy /Y $(ProjectDir)\*.ini $(TargetDir)
+set errorlevel=0</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup />
 </Project>

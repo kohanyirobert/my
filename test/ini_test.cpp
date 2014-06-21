@@ -21,7 +21,7 @@ public:
 
 		std::string const & dir(my::path::get_current_dir());
 		std::string const & path(my::path::combine(dir, "ini_test.ini"));
-		my::ini::file const & file(my::ini::file(32, path));
+		my::ini::file const & file(my::ini::file(path, 32));
 		std::vector<my::ini::section const> const & sections(file.get_sections());
 		Assert::IsTrue(sections.size() == 3);
 		for (auto const & section : sections)

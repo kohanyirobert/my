@@ -11,21 +11,23 @@ namespace my
 		class file final
 		{
 		private:
-			my::io::ch const & channel;
 			std::string const & path;
 			bool const & enabled;
+			unsigned char const & lvl;
+			my::io::ch const & channel;
 
 			file();
 
 		public:
-			file(std::string const & path, bool const & enabled, my::io::ch const & channel);
+			file(std::string const & path, bool const & enabled, unsigned char const & lvl, my::io::ch const & channel);
 			~file();
 
-			my::io::ch const & get_channel() const;
 			std::string const & get_path() const;
 			bool const & get_enabled() const;
+			unsigned char const & get_lvl() const;
+			my::io::ch const & get_channel() const;
 
-			void log(std::string const & str) const;
+			void log(unsigned char const & lvl, std::string const & str) const;
 		};
 	}
 }

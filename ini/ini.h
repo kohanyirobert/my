@@ -27,11 +27,12 @@ namespace my
 			file();
 
 		public:
-			file(unsigned long const & buffer_size, std::string const & path);
+			file(std::string const & path, unsigned long const & buffer_size);
 			~file();
 
-			unsigned long const & get_buffer_size() const;
 			std::string const & get_path() const;
+			unsigned long const & get_buffer_size() const;
+			
 			std::vector<my::ini::section const> const get_sections() const;
 			my::ini::section const get_section(std::string const & name) const;
 		};
