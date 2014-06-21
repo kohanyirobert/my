@@ -1,0 +1,52 @@
+#include <cppunittest.h>
+
+#include "..\misc\misc.h"
+
+using namespace Microsoft::VisualStudio::CppUnitTestFramework;
+
+TEST_CLASS(misc_test_class)
+{
+	public:
+		TEST_METHOD(misc_test)
+		{
+			std::vector<std::string const> vector_a;
+			vector_a.push_back("a");
+			vector_a.push_back("b");
+			vector_a.push_back("c");
+			vector_a.push_back("d");
+			vector_a.push_back("e");
+
+			std::vector<std::string const> vector_b;
+			vector_b.push_back("a");
+			vector_b.push_back("b");
+			vector_b.push_back("c");
+			vector_b.push_back("d");
+			vector_b.push_back("e");
+
+			std::chrono::system_clock::time_point time_point_a(std::chrono::system_clock::now());
+
+			my::misc::sleep_milliseconds(1);
+
+			std::chrono::system_clock::time_point time_point_b(std::chrono::system_clock::now());
+
+			my::misc::shuffle(time_point_a, vector_a);
+			my::misc::shuffle(time_point_a, vector_b);
+
+			Assert::IsTrue(
+				vector_a[0] == vector_b[0]
+				&& vector_a[1] == vector_b[1]
+				&& vector_a[2] == vector_b[2]
+				&& vector_a[3] == vector_b[3]
+				&& vector_a[4] == vector_b[4]);
+
+			my::misc::shuffle(time_point_a, vector_a);
+			my::misc::shuffle(time_point_b, vector_b);
+
+			Assert::IsFalse(
+				vector_a[0] == vector_b[0]
+				&& vector_a[1] == vector_b[1]
+				&& vector_a[2] == vector_b[2]
+				&& vector_a[3] == vector_b[3]
+				&& vector_a[4] == vector_b[4]);
+		}
+};
