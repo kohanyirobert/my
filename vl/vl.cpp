@@ -112,33 +112,37 @@ public:
 		_In_ ::ERole role,
 		_In_ ::LPCWSTR pwstrDefaultDevice)
 	{
-		log_file.log(1, "MMNotificationClient.OnDefaultDeviceChanged");
+		log_file.log(1, "MMNotificationClient.OnDefaultDeviceChanged Start");
 		::UnregisterAllNotification();
 		::RegisterAllNotification(this->enumerator);
+		log_file.log(1, "MMNotificationClient.OnDefaultDeviceChanged End");
 		return S_OK;
 	}
 
 	::HRESULT STDMETHODCALLTYPE OnDeviceAdded(_In_ ::LPCWSTR pwstrDeviceId)
 	{
-		log_file.log(1, "MMNotificationClient.OnDeviceAdded");
+		log_file.log(1, "MMNotificationClient.OnDeviceAdded Start");
 		::UnregisterAllNotification();
 		::RegisterAllNotification(this->enumerator);
+		log_file.log(1, "MMNotificationClient.OnDeviceAdded End");
 		return S_OK;
 	}
 
 	::HRESULT STDMETHODCALLTYPE OnDeviceRemoved(_In_ ::LPCWSTR pwstrDeviceId)
 	{
-		log_file.log(1, "MMNotificationClient.OnDeviceRemoved");
+		log_file.log(1, "MMNotificationClient.OnDeviceRemoved Start");
 		::UnregisterAllNotification();
 		::RegisterAllNotification(this->enumerator);
+		log_file.log(1, "MMNotificationClient.OnDeviceRemoved End");
 		return S_OK;
 	}
 
 	::HRESULT STDMETHODCALLTYPE OnDeviceStateChanged(_In_ ::LPCWSTR pwstrDeviceId, _In_ ::DWORD dwNewState)
 	{
-		log_file.log(1, "MMNotificationClient.OnDeviceStateChanged");
+		log_file.log(1, "MMNotificationClient.OnDeviceStateChanged Start");
 		::UnregisterAllNotification();
 		::RegisterAllNotification(this->enumerator);
+		log_file.log(1, "MMNotificationClient.OnDeviceStateChanged End");
 		return S_OK;
 	}
 
@@ -175,10 +179,11 @@ public:
 
 	::HRESULT STDMETHODCALLTYPE OnSessionCreated(_In_ ::IAudioSessionControl * NewSession)
 	{
-		log_file.log(0, "AudioSessionNotification.OnSessionCreated");
+		log_file.log(1, "AudioSessionNotification.OnSessionCreated Start");
 		::IAudioSessionControl2 * control2 = ::GetControl2(NewSession);
 		::ControlVolume(control2);
 		::RegisterEvents(control2);
+		log_file.log(1, "AudioSessionNotification.OnSessionCreated End");
 		return S_OK;
 	}
 };
@@ -205,7 +210,7 @@ public:
 
 	::ULONG STDMETHODCALLTYPE Release()
 	{
-		log_file.log(0, "AudioSessionEvents.QueryInterface");
+		log_file.log(0, "AudioSessionEvents.Release");
 		return 0;
 	}
 
@@ -248,8 +253,9 @@ public:
 		_In_ ::BOOL NewMute,
 		_In_ ::LPCGUID EventContext)
 	{
-		log_file.log(1, "AudioSessionEvents.OnSimpleVolumeChanged");
+		log_file.log(1, "AudioSessionEvents.OnSimpleVolumeChanged Start");
 		::ControlVolume(this->control2);
+		log_file.log(1, "AudioSessionEvents.OnSimpleVolumeChanged End");
 		return S_OK;
 	}
 
@@ -297,7 +303,7 @@ VOID SignalHandler(::INT signal)
 
 ::IMMDeviceEnumerator * GetEnumerator()
 {
-	log_file.log(1, "GetEnumerator");
+	log_file.log(1, "GetEnumerator Start");
 	::IMMDeviceEnumerator * enumerator(nullptr);
 	if (FAILED(
 		::CoCreateInstance(
@@ -309,12 +315,13 @@ VOID SignalHandler(::INT signal)
 	{
 		::ExitApp(ERR_DEVICE_ENUMERATOR);
 	}
+	log_file.log(1, "GetEnumerator End");
 	return enumerator;
 }
 
 ::IAudioSessionManager2 * GetManager2(::IMMDevice * device)
 {
-	log_file.log(1, "GetManager2");
+	log_file.log(1, "GetManager2 Start");
 	::IAudioSessionManager2 * manager2(nullptr);
 	if (FAILED(
 		device->Activate(
@@ -325,12 +332,13 @@ VOID SignalHandler(::INT signal)
 	{
 		::ExitApp(ERR_SESSION_MANAGER2);
 	}
+	log_file.log(1, "GetManager2 End");
 	return manager2;
 }
 
 ::IAudioSessionControl2 * GetControl2(::IAudioSessionControl * control)
 {
-	log_file.log(1, "GetControl2");
+	log_file.log(1, "GetControl2 Start");
 	::IAudioSessionControl2 * control2 = nullptr;
 	if (FAILED(
 		control->QueryInterface(
@@ -339,21 +347,23 @@ VOID SignalHandler(::INT signal)
 	{
 		::ExitApp(ERR_SESSION_CONTROL2);
 	}
+	log_file.log(1, "GetControl2 End");
 	return control2;
 }
 
 ::IMMNotificationClient * RegisterClient(::IMMDeviceEnumerator * enumerator)
 {
-	log_file.log(1, "RegisterClient");
+	log_file.log(1, "RegisterClient Start");
 	::RegisterAllNotification(enumerator);
 	::IMMNotificationClient * client(new ::MMNotificationClient(enumerator));
 	enumerator->RegisterEndpointNotificationCallback(client);
+	log_file.log(1, "RegisterClient End");
 	return client;
 }
 
 VOID UnregisterClient(::IMMDeviceEnumerator * enumerator, ::IMMNotificationClient * client)
 {
-	log_file.log(1, "UnregisterClient");
+	log_file.log(1, "UnregisterClient Start");
 	::UnregisterAllEvents();
 	::UnregisterAllNotification();
 	enumerator->UnregisterEndpointNotificationCallback(client);
@@ -361,11 +371,12 @@ VOID UnregisterClient(::IMMDeviceEnumerator * enumerator, ::IMMNotificationClien
 	client = nullptr;
 	enumerator->Release();
 	enumerator = nullptr;
+	log_file.log(1, "UnregisterClient End");
 }
 
 VOID RegisterAllNotification(::IMMDeviceEnumerator * enumerator)
 {
-	log_file.log(1, "RegisterAllNotification");
+	log_file.log(1, "RegisterAllNotification Start");
 	::IMMDeviceCollection * collection(nullptr);
 	if (FAILED(
 		enumerator->EnumAudioEndpoints(
@@ -395,19 +406,21 @@ VOID RegisterAllNotification(::IMMDeviceEnumerator * enumerator)
 	}
 	collection->Release();
 	collection = nullptr;
+	log_file.log(1, "RegisterAllNotification End");
 }
 
 VOID RegisterNotification(::IAudioSessionManager2 * manager2)
 {
-	log_file.log(1, "RegisterNotification");
+	log_file.log(1, "RegisterNotification Start");
 	::IAudioSessionNotification * notification(new ::AudioSessionNotification());
 	manager2->RegisterSessionNotification(notification);
 	notification_map.insert(NotificationPair(manager2, notification));
+	log_file.log(1, "RegisterNotification End");
 }
 
 VOID UnregisterAllNotification()
 {
-	log_file.log(1, "UnregisterAllNotification");
+	log_file.log(1, "UnregisterAllNotification Start");
 	::UnregisterAllEvents();
 	for (auto const & notification_pair : notification_map)
 	{
@@ -420,11 +433,12 @@ VOID UnregisterAllNotification()
 		manager2 = nullptr;
 	}
 	notification_map.clear();
+	log_file.log(1, "UnregisterAllNotification End");
 }
 
 VOID RegisterAllEvents(::IAudioSessionManager2 * manager2)
 {
-	log_file.log(1, "RegisterAllEvents");
+	log_file.log(1, "RegisterAllEvents Start");
 	::IAudioSessionEnumerator * enumerator(nullptr);
 	if (FAILED(manager2->GetSessionEnumerator(&enumerator)))
 	{
@@ -448,19 +462,21 @@ VOID RegisterAllEvents(::IAudioSessionManager2 * manager2)
 	}
 	enumerator->Release();
 	enumerator = nullptr;
+	log_file.log(1, "RegisterAllEvents End");
 }
 
 VOID RegisterEvents(::IAudioSessionControl2 * control2)
 {
-	log_file.log(1, "RegisterEvents");
+	log_file.log(1, "RegisterEvents Start");
 	::IAudioSessionEvents * events(new ::AudioSessionEvents(control2));
 	control2->RegisterAudioSessionNotification(events);
 	events_map.insert(::EventsPair(control2, events));
+	log_file.log(1, "RegisterEvents End");
 }
 
 VOID UnregisterAllEvents()
 {
-	log_file.log(1, "UnregisterAllEvents");
+	log_file.log(1, "UnregisterAllEvents Start");
 	for (auto const & events_pair : events_map)
 	{
 		::IAudioSessionControl2 * control2(events_pair.first);
@@ -472,11 +488,12 @@ VOID UnregisterAllEvents()
 		control2 = nullptr;
 	}
 	events_map.clear();
+	log_file.log(1, "UnregisterAllEvents End");
 }
 
 VOID ControlVolume(::IAudioSessionControl2 * control2)
 {
-	log_file.log(1, "ControlVolume");
+	log_file.log(1, "ControlVolume Start");
 	::DWORD id;
 	if (FAILED(control2->GetProcessId(&id)))
 	{
@@ -537,6 +554,7 @@ VOID ControlVolume(::IAudioSessionControl2 * control2)
 		}
 	}
 	::CoTaskMemFree(display_name);
+	log_file.log(1, "ControlVolume Start");
 }
 
 VOID ExitApp(::INT code)
