@@ -21,11 +21,9 @@
 
 enum ErrorCodes
 {
-	ERR_INI_NAME = 1,
-	ERR_INI_SECTIONS,
+	ERR_CO_INITIALIZE = 1,
 	ERR_INI_MAX,
 	ERR_INI_RXP,
-	ERR_CO_INITIALIZE,
 	ERR_DEVICE_ENUMERATOR,
 	ERR_DEVICE_COLLECTION,
 	ERR_DEVICE_COLLECTION_COUNT,
@@ -36,7 +34,7 @@ enum ErrorCodes
 	ERR_SESSION_ENUMERATOR_GET_SESSION,
 	ERR_SESSION_CONTROL2,
 	ERR_CONTROL_PROCESS,
-	ERR_CONTROL_NAME,
+	ERR_CONTROL_PATH,
 	ERR_CONTROL_VOLUME
 };
 
@@ -139,9 +137,12 @@ public:
 
 	::HRESULT STDMETHODCALLTYPE OnDeviceStateChanged(_In_ ::LPCWSTR pwstrDeviceId, _In_ ::DWORD dwNewState)
 	{
-		log_file.log(1, "MMNotificationClient.OnDeviceStateChanged Start");
-		::UnregisterAllNotification();
-		::RegisterAllNotification(this->enumerator);
+		log_file.log(1, "MMNotificationClient.OnDeviceStateChanged Start " + std::to_string(dwNewState));
+		if (dwNewState == DEVICE_STATE_ACTIVE)
+		{
+			::UnregisterAllNotification();
+			::RegisterAllNotification(this->enumerator);
+		}
 		log_file.log(1, "MMNotificationClient.OnDeviceStateChanged End");
 		return S_OK;
 	}
@@ -295,7 +296,7 @@ public:
 
 VOID SignalHandler(::INT signal)
 {
-	log_file.log(1, "SignalHandler" + signal);
+	log_file.log(1, "SignalHandler" + std::to_string(signal));
 	::UnregisterClient(enumerator, client);
 	::CoUninitialize();
 	::ExitApp(EXIT_SUCCESS);
@@ -506,7 +507,8 @@ VOID ControlVolume(::IAudioSessionControl2 * control2)
 	std::string path;
 	if (!my::proc::get_file(id, path))
 	{
-		::ExitApp(ERR_CONTROL_NAME);
+		log_file.log(2, "ControlVolume Error " + std::to_string(ERR_CONTROL_PATH));
+		return;
 	}
 	::PWSTR display_name;
 	control2->GetDisplayName(&display_name);
@@ -559,6 +561,6 @@ VOID ControlVolume(::IAudioSessionControl2 * control2)
 
 VOID ExitApp(::INT code)
 {
-	log_file.log(1, "ExitApp " + code);
+	log_file.log(1, "ExitApp " + std::to_string(code));
 	::ExitProcess(code);
 }
