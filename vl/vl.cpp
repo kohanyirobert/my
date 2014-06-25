@@ -35,7 +35,8 @@ enum ErrorCodes
 	ERR_SESSION_CONTROL2,
 	ERR_CONTROL_PROCESS,
 	ERR_CONTROL_PATH,
-	ERR_CONTROL_VOLUME
+	ERR_CONTROL_VOLUME,
+	ERR_CONTROL_STATE
 };
 
 typedef std::map<::IAudioSessionManager2 *, ::IAudioSessionNotification *> NotificationMap;
@@ -68,6 +69,7 @@ VOID SignalHandler(::INT signal);
 ::IMMDeviceEnumerator * GetEnumerator();
 ::IAudioSessionManager2 * GetManager2(::IMMDevice * device);
 ::IAudioSessionControl2 * GetControl2(::IAudioSessionControl * control);
+::AudioSessionState GetState(::IAudioSessionControl2 * control2);
 ::IMMNotificationClient * RegisterClient(::IMMDeviceEnumerator * enumerator);
 VOID UnregisterClient(::IMMDeviceEnumerator * enumerator, ::IMMNotificationClient * client);
 VOID RegisterAllNotification(::IMMDeviceEnumerator * enumerator);
@@ -137,13 +139,13 @@ public:
 
 	::HRESULT STDMETHODCALLTYPE OnDeviceStateChanged(_In_ ::LPCWSTR pwstrDeviceId, _In_ ::DWORD dwNewState)
 	{
-		log_file.log(1, "MMNotificationClient.OnDeviceStateChanged Start " + std::to_string(dwNewState));
+		log_file.log(2, "MMNotificationClient.OnDeviceStateChanged Start " + std::to_string(dwNewState));
 		if (dwNewState == DEVICE_STATE_ACTIVE)
 		{
 			::UnregisterAllNotification();
 			::RegisterAllNotification(this->enumerator);
 		}
-		log_file.log(1, "MMNotificationClient.OnDeviceStateChanged End");
+		log_file.log(2, "MMNotificationClient.OnDeviceStateChanged End");
 		return S_OK;
 	}
 
@@ -254,7 +256,7 @@ public:
 		_In_ ::BOOL NewMute,
 		_In_ ::LPCGUID EventContext)
 	{
-		log_file.log(1, "AudioSessionEvents.OnSimpleVolumeChanged Start");
+		log_file.log(1, "AudioSessionEvents.OnSimpleVolumeChanged Start " + std::to_string(NewVolume));
 		::ControlVolume(this->control2);
 		log_file.log(1, "AudioSessionEvents.OnSimpleVolumeChanged End");
 		return S_OK;
@@ -263,7 +265,7 @@ public:
 	::HRESULT STDMETHODCALLTYPE OnStateChanged(
 		_In_ ::AudioSessionState NewState)
 	{
-		log_file.log(1, "AudioSessionEvents.OnStateChanged");
+		log_file.log(1, "AudioSessionEvents.OnStateChanged " + std::to_string(NewState));
 		return S_OK;
 	}
 };
@@ -350,6 +352,18 @@ VOID SignalHandler(::INT signal)
 	}
 	log_file.log(1, "GetControl2 End");
 	return control2;
+}
+
+::AudioSessionState GetState(::IAudioSessionControl2 * control2)
+{
+	log_file.log(1, "GetState Start");
+	::AudioSessionState state;
+	if (FAILED(control2->GetState(&state)))
+	{
+		::ExitApp(ERR_CONTROL_STATE);
+	}
+	log_file.log(1, "GetState End");
+	return state;
 }
 
 ::IMMNotificationClient * RegisterClient(::IMMDeviceEnumerator * enumerator)
@@ -460,6 +474,8 @@ VOID RegisterAllEvents(::IAudioSessionManager2 * manager2)
 		::IAudioSessionControl2 * control2(::GetControl2(control));
 		::ControlVolume(control2);
 		::RegisterEvents(control2);
+		control->Release();
+		control = nullptr;
 	}
 	enumerator->Release();
 	enumerator = nullptr;
@@ -485,7 +501,10 @@ VOID UnregisterAllEvents()
 		control2->UnregisterAudioSessionNotification(events);
 		delete events;
 		events = nullptr;
-		control2->Release();
+		if (::GetState(control2) == AudioSessionStateActive)
+		{
+			control2->Release();
+		}
 		control2 = nullptr;
 	}
 	events_map.clear();
@@ -561,6 +580,6 @@ VOID ControlVolume(::IAudioSessionControl2 * control2)
 
 VOID ExitApp(::INT code)
 {
-	log_file.log(1, "ExitApp " + std::to_string(code));
+	log_file.log(2, "ExitApp " + std::to_string(code));
 	::ExitProcess(code);
 }
