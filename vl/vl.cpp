@@ -35,8 +35,7 @@ enum ErrorCodes
 	ERR_SESSION_CONTROL2,
 	ERR_CONTROL_PROCESS,
 	ERR_CONTROL_PATH,
-	ERR_CONTROL_VOLUME,
-	ERR_CONTROL_STATE
+	ERR_CONTROL_VOLUME
 };
 
 typedef std::map<::IAudioSessionManager2 *, ::IAudioSessionNotification *> NotificationMap;
@@ -69,7 +68,6 @@ VOID SignalHandler(::INT signal);
 ::IMMDeviceEnumerator * GetEnumerator();
 ::IAudioSessionManager2 * GetManager2(::IMMDevice * device);
 ::IAudioSessionControl2 * GetControl2(::IAudioSessionControl * control);
-::AudioSessionState GetState(::IAudioSessionControl2 * control2);
 ::IMMNotificationClient * RegisterClient(::IMMDeviceEnumerator * enumerator);
 VOID UnregisterClient(::IMMDeviceEnumerator * enumerator, ::IMMNotificationClient * client);
 VOID RegisterAllNotification(::IMMDeviceEnumerator * enumerator);
@@ -354,18 +352,6 @@ VOID SignalHandler(::INT signal)
 	return control2;
 }
 
-::AudioSessionState GetState(::IAudioSessionControl2 * control2)
-{
-	log_file.log(1, "GetState Start");
-	::AudioSessionState state;
-	if (FAILED(control2->GetState(&state)))
-	{
-		::ExitApp(ERR_CONTROL_STATE);
-	}
-	log_file.log(1, "GetState End");
-	return state;
-}
-
 ::IMMNotificationClient * RegisterClient(::IMMDeviceEnumerator * enumerator)
 {
 	log_file.log(1, "RegisterClient Start");
@@ -501,10 +487,9 @@ VOID UnregisterAllEvents()
 		control2->UnregisterAudioSessionNotification(events);
 		delete events;
 		events = nullptr;
-		if (::GetState(control2) == AudioSessionStateActive)
-		{
-			control2->Release();
-		}
+		// Releasing control2 fails for some reason. I'm ignoring it, because during the lifecycle of the program
+		// there won't be too many danling com objects (if any), so it'll probably won't cause any problems.
+		//control2->Release();
 		control2 = nullptr;
 	}
 	events_map.clear();

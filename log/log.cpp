@@ -58,7 +58,7 @@ void my::log::file::log(unsigned char const & lvl, std::string const & str) cons
 		std::strftime(&buffer[0], buffer.size(), "%Y-%m-%dT%H:%M:%SZ", &tm);
 		buffer.erase(buffer.find_last_of('\0'));
 		std::stringstream in;
-		in << buffer << "[" << ::GetCurrentThreadId() << "] " << " - " << str << std::endl;
+		in << buffer << "[" << std::to_string(this->get_lvl()) << "]" << "[" << ::GetCurrentThreadId() << "] " << str << std::endl;
 		this->get_channel().str_to_file(in.str(), this->get_path());
 	}
 }
