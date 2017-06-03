@@ -1,0 +1,15 @@
+= Notes
+
+== `vl`
+
+Release build uses https://upx.github.io/[`upx`].
+
+== Tests
+
+Running `net_test.cpp` requires serving the `.\test` directory with a simple web-server.
+
+```
+python3 -m http.server
+```
+Runing `browser_test.cpp` requires Internet Explorer to be installed.
+On Windows 10 _Internet Explorere 11_ feature must be enabled.
