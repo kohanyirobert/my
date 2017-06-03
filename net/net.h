@@ -30,7 +30,7 @@ namespace my
 			bool url_to_out(std::string const & url, std::ostream & out) const;
 			bool url_to_str(std::string const & url, std::string & str) const;
 			bool url_to_file(std::string const & url, std::string const & file) const;
-			bool urls_to_file(std::vector<std::string const> const & urls, std::string const & file) const;
+			bool urls_to_file(std::vector<std::string> const & urls, std::string const & file) const;
 		};
 	}
 }

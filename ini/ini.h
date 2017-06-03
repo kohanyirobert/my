@@ -33,7 +33,7 @@ namespace my
 			std::string const & get_path() const;
 			unsigned long const & get_buffer_size() const;
 			
-			std::vector<my::ini::section const> const get_sections() const;
+			std::vector<my::ini::section> const get_sections() const;
 			my::ini::section const get_section(std::string const & name) const;
 		};
 
@@ -54,7 +54,7 @@ namespace my
 
 			bool get_bool(std::string const & key) const;
 			int get_int(std::string const & key) const;
-			std::vector<std::string const> get_strings(std::string const & key) const;
+			std::vector<std::string> get_strings(std::string const & key) const;
 			std::string get_string(std::string const & key) const;
 		};
 	}

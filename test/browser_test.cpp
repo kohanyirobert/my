@@ -1,4 +1,4 @@
-#include <cppunittest.h>
+﻿#include <cppunittest.h>
 
 #include "..\ole\ole.h"
 #include "..\path\path.h"

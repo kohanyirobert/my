@@ -78,17 +78,17 @@ unsigned long long my::misc::get_milliseconds_since_epoch(std::chrono::system_cl
 	return std::chrono::duration_cast<std::chrono::milliseconds>(time_point.time_since_epoch()).count();
 }
 
-void my::misc::shuffle(std::vector<std::string const> & vector)
+void my::misc::shuffle(std::vector<std::string> & vector)
 {
 	my::misc::shuffle(my::misc::get_milliseconds_since_epoch(), vector);
 }
 
-void my::misc::shuffle(std::chrono::system_clock::time_point const & time_point, std::vector<std::string const> & vector)
+void my::misc::shuffle(std::chrono::system_clock::time_point const & time_point, std::vector<std::string> & vector)
 {
 	my::misc::shuffle(my::misc::get_milliseconds_since_epoch(time_point), vector);
 }
 
-void my::misc::shuffle(unsigned long long const & seed, std::vector<std::string const> & vector)
+void my::misc::shuffle(unsigned long long const & seed, std::vector<std::string> & vector)
 {
 	std::shuffle(vector.begin(), vector.end(), std::mt19937_64(seed));
 }

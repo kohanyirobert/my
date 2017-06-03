@@ -27,7 +27,7 @@ unsigned long const & my::ini::file::get_buffer_size() const
 	return this->buffer_size;
 }
 
-std::vector<my::ini::section const> const my::ini::file::get_sections() const
+std::vector<my::ini::section> const my::ini::file::get_sections() const
 {
 	std::wstring buffer;
 	buffer.resize(this->get_buffer_size());
@@ -50,7 +50,7 @@ std::vector<my::ini::section const> const my::ini::file::get_sections() const
 			break;
 		}
 	}
-	std::vector<my::ini::section const> sections;
+	std::vector<my::ini::section> sections;
 	for(auto const & name : names)
 	{
 		sections.push_back(my::ini::section(*this, name.first));
@@ -124,9 +124,9 @@ std::string my::ini::section::get_string(std::string const & key) const
 	return my::str::narrow(string);
 }
 
-std::vector<std::string const> my::ini::section::get_strings(std::string const & key) const
+std::vector<std::string> my::ini::section::get_strings(std::string const & key) const
 {
-	std::vector<std::string const> strings;
+	std::vector<std::string> strings;
 	unsigned int index(0);
 	while (true)
 	{

@@ -149,7 +149,7 @@ bool my::net::dl::url_to_file(std::string const & url, std::string const & file)
 	return result;
 }
 
-bool my::net::dl::urls_to_file(std::vector<std::string const> const & urls, std::string const & file) const
+bool my::net::dl::urls_to_file(std::vector<std::string> const & urls, std::string const & file) const
 {
 	bool result(false);
 	for (unsigned int i(0); i < urls.size(); ++i)

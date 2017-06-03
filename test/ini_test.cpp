@@ -22,7 +22,7 @@ public:
 		std::string const & dir(my::path::get_current_dir());
 		std::string const & path(my::path::combine(dir, "ini_test.ini"));
 		my::ini::file const & file(my::ini::file(path, 32));
-		std::vector<my::ini::section const> const & sections(file.get_sections());
+		std::vector<my::ini::section> const & sections(file.get_sections());
 		Assert::IsTrue(sections.size() == 3);
 		for (auto const & section : sections)
 		{
@@ -41,13 +41,13 @@ public:
 		Assert::AreEqual(false, section.get_bool("bool_false"));
 		Assert::AreEqual(true, section.get_bool("bool_true"));
 
-		std::vector<std::string const> const & strings(section.get_strings("string"));
+		std::vector<std::string> const & strings(section.get_strings("string"));
 		Assert::IsTrue(strings.size() == 3);
 		Assert::AreEqual(string0, strings[0]);
 		Assert::AreEqual(string1, strings[1]);
 		Assert::AreEqual(string2, strings[2]);
 
-		std::vector<std::string const> const & empty_strings(section.get_strings("empty_string"));
+		std::vector<std::string> const & empty_strings(section.get_strings("empty_string"));
 		Assert::IsTrue(empty_strings.size() == 0);
 	}
 };

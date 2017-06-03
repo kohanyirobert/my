@@ -7,9 +7,9 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 TEST_CLASS(misc_test_class)
 {
 private:
-	std::vector<std::string const> new_vector()
+	std::vector<std::string> new_vector()
 	{
-		std::vector<std::string const> vector;
+		std::vector<std::string> vector;
 		vector.push_back("a");
 		vector.push_back("b");
 		vector.push_back("c");
@@ -19,8 +19,8 @@ private:
 	}
 
 	void assert_vectors(
-		std::vector<std::string const> const & vector_a,
-		std::vector<std::string const> const & vector_b,
+		std::vector<std::string> const & vector_a,
+		std::vector<std::string> const & vector_b,
 		bool const & expected)
 	{
 		Assert::AreEqual(
@@ -43,8 +43,8 @@ public:
 
 		for (unsigned int i(0); i < 3; ++i)
 		{
-			std::vector<std::string const> vector_a(new_vector());
-			std::vector<std::string const> vector_b(new_vector());
+			std::vector<std::string> vector_a(new_vector());
+			std::vector<std::string> vector_b(new_vector());
 
 			my::misc::shuffle(time_point_a, vector_a);
 			my::misc::shuffle(time_point_a, vector_b);
@@ -54,8 +54,8 @@ public:
 
 		for (unsigned int i(0); i < 3; ++i)
 		{
-			std::vector<std::string const> vector_a(new_vector());
-			std::vector<std::string const> vector_b(new_vector());
+			std::vector<std::string> vector_a(new_vector());
+			std::vector<std::string> vector_b(new_vector());
 
 			my::misc::shuffle(time_point_a, vector_a);
 			my::misc::shuffle(time_point_b, vector_b);
